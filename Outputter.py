@@ -8,8 +8,8 @@ class Outputter():
         self.output_file_contents = []
         self.simulation_file_contents = []
 
-    def add_output_row(self, turn: int, status: int, total_power: int, server_number: int):
-        self.output_file_contents.append([turn, status, total_power, server_number])
+    def add_output_row(self, turn: int, task_number: int, status: int, total_power: int, server_number: int):
+        self.output_file_contents.append([turn, task_number, status, total_power, server_number])
     
     def add_simulation_row(self, update_type: str, timestamp: float, turn: int, server_task_number: int, action_cores, ram: int = 0):
         if (update_type == "Task"): 

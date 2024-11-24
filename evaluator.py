@@ -16,10 +16,10 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
         for server in servers:
             (completed, failed) = server.remove_completed_failed_tasks()
             for task in completed:
-                outputter.add_output_row(turn, 1, task.cumulative_core_use * server.watts_per_core, server.number)
+                outputter.add_output_row(turn, 1, task.number, task.cumulative_core_use * server.watts_per_core, server.number)
                 outputter.add_simulation_row("Task", time.time() - start, turn, task.number, "Completed")
             for task in failed:
-                outputter.add_output_row(turn, 0, task.cumulative_core_use * server.watts_per_core, server.number)
+                outputter.add_output_row(turn, 0, task.number, task.cumulative_core_use * server.watts_per_core, server.number)
                 outputter.add_simulation_row("Task", time.time() - start, turn, task.number, "Failed")
 
         # 2. Read the next row in Tasks.csv for a new task to send to a server
@@ -31,7 +31,7 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
             # 3. Once a task is read, it must be assigned to a server in the same turn or marked as failed.
             if not add_task_to_servers(servers, task):
                 # 4b. If cannot be assigned to server, task fails and is written as a failure. 
-                outputter.add_output_row(turn, 0, 0, 0) # Failed task. 
+                outputter.add_output_row(turn, task.number, 0, 0, 0) # Failed task. 
                 outputter.add_simulation_row("Task", time.time() - start, turn, task.number, "Failed")
         
         # Output status of every servrer. 
