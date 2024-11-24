@@ -30,10 +30,6 @@ def get_tasks(fileName) -> list[Task]:
             task_list.append(Task(list(row)))
     return task_list
 
-# Used for testing in test.py. 
-def test(serverFileName : str, taskFileName : str) : 
-    return run("testServers\\" + serverFileName + ".csv", "testTasks\\" + taskFileName + ".csv", True)
-
 # Main. 
 def main() : 
     run()

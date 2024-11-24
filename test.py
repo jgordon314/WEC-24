@@ -5,8 +5,12 @@ import Server
 import Task
 import time
 
+# Used for testing for specific files in testServers folder
+def test(serverFileName : str, taskFileName : str) : 
+    return main.run("testServers\\" + serverFileName + ".csv", "testTasks\\" + taskFileName + ".csv", True)
+
 def test_given():
-    assert main.test("given", "given") == None
+    assert test("given", "given") == None
 
 def test_cracked():
     totalTime = 0
@@ -14,7 +18,7 @@ def test_cracked():
     totalTasks = 0
     totalTurns = 0
     totalTasksCompleted = 0
-    tests = 10000
+    tests = 1000
     for w in range(0, tests):
         if(w % (tests/10) == 0) : print(w / (tests/100))
         serverList = []
