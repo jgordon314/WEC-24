@@ -3,7 +3,7 @@ from Task import Task
 from Outputter import Outputter
 import time 
 
-def eval(servers : list[Server], tasks : list[Task], printData : bool):
+def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
     # Create the output files for the program
     outputter : Outputter = Outputter()
 
@@ -48,8 +48,9 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool):
         # Checking to see if complete. 
         if (complete(servers, tasks)):
             # print(f"finished at {turn}")
-            print(outputter.output_file_contents)
-            print(outputter.simulation_file_contents)
+            if(printData):
+                print(outputter.output_file_contents)
+                print(outputter.simulation_file_contents)
             return outputter
 
 

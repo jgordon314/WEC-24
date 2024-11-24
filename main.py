@@ -27,7 +27,7 @@ def get_tasks(fileName) -> list[Task]:
     return task_list
 
 def test(serverFileName : str, taskFileName : str) : 
-    return run("/testServers/" + serverFileName + ".csv", "/testFiles/" + taskFileName + ".csv", True)
+    return run("testServers\\" + serverFileName + ".csv", "testTasks\\" + taskFileName + ".csv", True)
 
 def main() : 
     run()
