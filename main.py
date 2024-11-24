@@ -1,29 +1,38 @@
 from Server import Server
 from Task import Task
 import csv 
+from evaluator import eval
 
-def main():
-    servers = get_server()
-    tasks = get_tasks()
 
-def get_server(): 
+
+def run(serverFileName : str = 'Server.csv',  taskFileName : str = 'Tasks.csv', printData : bool = False):
+    servers = get_server(serverFileName)
+    tasks = get_tasks(taskFileName)
+    eval(servers, tasks, printData)
+
+def get_server(fileName): 
     server_list = []
-    with open('Server.csv') as csvfile: 
+    with open(fileName) as csvfile: 
         spamreader = csv.reader(csvfile)
         next(spamreader) # Skip header
         for row in spamreader: 
             server_list.append(Server(list(row)))
     return server_list
 
-def get_tasks():
+def get_tasks(fileName):
     task_list = []
-    with open('Tasks.csv') as csvfile: 
+    with open(fileName) as csvfile: 
         spamreader = csv.reader(csvfile)
         next(spamreader) # Skip header
         for row in spamreader: 
             task_list.append(Task(list(row)))
     return task_list
 
+def test(serverFileName : str, taskFileName : str) : 
+    return run("/testServers/" + serverFileName + ".csv", "/testFiles/" + taskFileName + ".csv", True)
 
+def main() : 
+    run()
+    
 if __name__ == "__main__":
     main()
