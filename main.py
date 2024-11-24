@@ -3,9 +3,6 @@ from Task import Task
 import csv 
 from evaluator import eval
 
-def main():
-    run()
-
 def run(serverFileName : str = 'Server.csv',  taskFileName : str = 'Tasks.csv', printData : bool = False):
     servers = get_server(serverFileName)
     tasks = get_tasks(taskFileName)

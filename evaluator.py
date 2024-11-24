@@ -29,17 +29,8 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool):
             outputter.add_simulation_row("Task", time.time() - start, turn, task.number, "Read")
 
             # 3. Once a task is read, it must be assigned to a server in the same turn or marked as failed.
-            for server in servers:
-                # 4a. Assign to server.
-                if server.can_add_task(task):
-                    # print(f"assigning {task.number} to {server.number}")
-                    server.add_task(task)
-                    task = None
-                    break
-            
-            # 4b. If cannot be assigned to server, task fails and is written as a failure. 
-            if task != None:
-                # print(f"unable to add task {task.number} to server")
+            if not add_task_to_servers(servers, task):
+                # 4b. If cannot be assigned to server, task fails and is written as a failure. 
                 outputter.add_output_row(turn, 0, 0, 0) # Failed task. 
                 outputter.add_simulation_row("Task", time.time() - start, turn, task.number, "Failed")
         
@@ -60,9 +51,22 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool):
             print(outputter.output_file_contents)
             print(outputter.simulation_file_contents)
             return outputter
-    
+
+
+# Adds a new task into the server. 
+# Returns true if the task was added and false if the task was not added. 
+def add_task_to_servers(servers: list[Server], task: Task) -> bool:
+    for server in servers:
+        # 4a. Assign to server.
+        if server.can_add_task(task):
+            # print(f"assigning {task.number} to {server.number}")
+            server.add_task(task)
+            return True
+    return False
+
 
 def complete(servers: list[Server], tasks: list[Task]) -> bool:
+    
     if len(tasks) != 0:
         return False
     for server in servers:
