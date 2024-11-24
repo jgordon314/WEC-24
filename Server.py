@@ -96,3 +96,14 @@ class Server() :
             task.complete_in_turns -= 1
         for task in self.stored_tasks:
             task.complete_in_turns -= 1
+        
+    # Moves all every task in tasks to running
+    # Removes all tasks that are not running
+    def setRunning(self, tasks : list[Task]):
+        self.stored_tasks = (self.running_tasks.union(self.stored_tasks))
+        self.stored_tasks = self.stored_tasks.difference(tasks)
+        self.running_tasks = set(tasks)
+        self.cores_used = 0
+        for x in self.running_tasks:
+            self.cores_used += x.cores
+        

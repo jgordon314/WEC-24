@@ -23,7 +23,7 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
                 outputter.add_simulation_row("Task", time.time() - start, turn, task.number, "Failed")
 
         # Move any stored tasks into running. 
-        move_stored_tasks_to_running(servers)
+        set_stored_tasks_to_running(servers)
 
         # 2. Read the next row in Tasks.csv for a new task to send to a server
         if (len(tasks) != 0):
@@ -57,15 +57,47 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
             return outputter
 
 # Moves any tasks that are stored to now be running. 
-def move_stored_tasks_to_running(servers: list[Server]) -> None:
-    tasks_to_move = []
-    for server in servers: 
+def set_stored_tasks_to_running(servers: list[Server]) -> None:
+    def getForServer(server: Server) -> list[Task]:
+        def powerset(set : list[Task]) -> list[list[Task]] :
+            if len(set) == 0:
+                return []
+            
+            addedSet = [[set[0]]]
+            for y in powerset(set[1:]):
+                addedSet.append(y.copy())
+                y.append(set[0])
+                addedSet.append(y)
+            return addedSet
+        
+        def score(tasks: list[Task]):
+            totalTime = 0
+            for task in tasks:
+                totalTime += task.complete_in_turns
+            return totalTime
+        #sort the tasks into a list
+        allTasks = []
+        for task in server.running_tasks:
+            allTasks.append(task)
         for task in server.stored_tasks:
-            if server.can_move_stored_to_running(task):
-                tasks_to_move.append(task)
-    for task in tasks_to_move:
-        if task in server.stored_tasks:
-            server.move_stored_task_to_running(task)
+            allTasks.append(task)
+        if(len(allTasks) == 0):
+            return []
+        
+        pSet = powerset(allTasks)
+        maxLen = 0
+        for x in pSet:
+            if len(x) > maxLen:
+                maxLen = len(x)
+        pSet = [x for x in pSet if len(x) == maxLen]
+        # gets a list of all the possible combinations of tasks where as many tasks are running as possible
+        
+        pSet.sort(key=score) # sorted now by lowest total run time
+        return pSet[0]        
+            
+                
+    for server in servers:
+        server.setRunning(getForServer(server))
 
 # Adds a new task into the server (either for running or for storage). 
 # Returns true if the task was added and false if the task was not added. 
