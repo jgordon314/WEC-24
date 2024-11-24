@@ -6,26 +6,23 @@ def main():
     servers = get_server()
     tasks = get_tasks()
 
-    print(servers)
-    print(tasks)
-
 def get_server(): 
-    csv_table = []
+    server_list = []
     with open('Server.csv') as csvfile: 
         spamreader = csv.reader(csvfile)
         next(spamreader) # Skip header
         for row in spamreader: 
-            csv_table.append(list(row))
-    return csv_table
+            server_list.append(Server(list(row)))
+    return server_list
 
 def get_tasks():
-    csv_table = []
+    task_list = []
     with open('Tasks.csv') as csvfile: 
         spamreader = csv.reader(csvfile)
         next(spamreader) # Skip header
         for row in spamreader: 
-            csv_table.append(list(row))
-    return csv_table
+            task_list.append(Task(list(row)))
+    return task_list
 
 
 if __name__ == "__main__":
