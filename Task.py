@@ -9,5 +9,5 @@ class Task():
         self.complete_in_turns = int(csv_row[4])
         
         # Used for calculating total power used. 
-        self.core_use = self.turns * self.cores
+        self.cumulative_core_use = self.turns * self.cores
 
