@@ -1,3 +1,5 @@
+import csv
+
 class Outputter():
     # Class to store output results 
 
@@ -20,3 +22,12 @@ class Outputter():
 
         else: 
             print("Tried to add simulation row for non-server and non-task.")
+    
+    def write_results(self):
+        with open(self.output_file_name, 'w', newline='') as result_file:
+            wr = csv.writer(result_file)
+            wr.writerows(self.output_file_contents)
+        
+        with open(self.simulation_file_name, 'w', newline='') as result_file:
+            wr = csv.writer(result_file)
+            wr.writerows(self.simulation_file_contents)

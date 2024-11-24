@@ -6,7 +6,8 @@ from evaluator import eval
 def run(serverFileName : str = 'Server.csv',  taskFileName : str = 'Tasks.csv', printData : bool = False):
     servers = get_server(serverFileName)
     tasks = get_tasks(taskFileName)
-    eval(servers, tasks, printData)
+    output = eval(servers, tasks, printData)
+    output.write_results()
 
 def get_server(fileName) -> list[Server]: 
     server_list = []
