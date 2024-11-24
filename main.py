@@ -3,14 +3,15 @@ from Task import Task
 import csv 
 from evaluator import eval
 
-
+def main():
+    run()
 
 def run(serverFileName : str = 'Server.csv',  taskFileName : str = 'Tasks.csv', printData : bool = False):
     servers = get_server(serverFileName)
     tasks = get_tasks(taskFileName)
     eval(servers, tasks, printData)
 
-def get_server(fileName): 
+def get_server(fileName) -> list[Server]: 
     server_list = []
     with open(fileName) as csvfile: 
         spamreader = csv.reader(csvfile)
@@ -19,7 +20,7 @@ def get_server(fileName):
             server_list.append(Server(list(row)))
     return server_list
 
-def get_tasks(fileName):
+def get_tasks(fileName) -> list[Task]:
     task_list = []
     with open(fileName) as csvfile: 
         spamreader = csv.reader(csvfile)
