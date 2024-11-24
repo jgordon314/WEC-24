@@ -23,7 +23,7 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
                 outputter.add_simulation_row("Task", time.time() - start, turn, task.number, "Failed")
 
         # 2. Read the next row in Tasks.csv for a new task to send to a server
-        if (len(tasks) != 0):
+        if (len(tasks) != 0 and should_read_task(servers, tasks)):
             task = tasks.pop(0)
 
             outputter.add_simulation_row("Task", time.time() - start, turn, task.number, "Read")
@@ -48,11 +48,10 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
         # Checking to see if complete. 
         if (complete(servers, tasks)):
             # print(f"finished at {turn}")
-            if(printData):
+            if printData:
                 print(outputter.output_file_contents)
                 print(outputter.simulation_file_contents)
             return outputter
-
 
 # Adds a new task into the server. 
 # Returns true if the task was added and false if the task was not added. 
@@ -65,9 +64,12 @@ def add_task_to_servers(servers: list[Server], task: Task) -> bool:
             return True
     return False
 
+# Determines if we will read from the next task, or wait a turn. 
+def should_read_task(servers: list[Server], tasks: list[Task]) -> bool:
+    return True
 
+# Returns true if we are done handling all tasks. 
 def complete(servers: list[Server], tasks: list[Task]) -> bool:
-    
     if len(tasks) != 0:
         return False
     for server in servers:
