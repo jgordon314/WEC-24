@@ -19,15 +19,11 @@ class Server() :
         return (task.cores + self.cores_used <= self.max_cores) and (task.ram + self.ram_used <= self.max_ram)
     
     # Adds a task into the server. 
-    #   Returns true if the task was able to be added, otherwise return false. 
+    # Pre: can_add_task(task) == true 
     def add_task(self, task : Task):
-        if self.can_add_task(task):
-            self.cores_used += task.cores
-            self.ram_used += task.ram
-            self.tasks.add(task)
-            return True
-        else:
-            return False
+        self.cores_used += task.cores
+        self.ram_used += task.ram
+        self.tasks.add(task)
     
     # Removes a task from the server. Requires the server to have this task. 
     def remove_task(self, task: Task):
@@ -42,12 +38,12 @@ class Server() :
         tasks_to_remove: set[Task] = set()
         
         for task in self.tasks:
-            if task.turns == 0:
+            if task.turns <= 0:
                 complete_tasks.add(task)
                 tasks_to_remove.add(task)
                 self.ram_used -= task.ram
                 self.cores_used -= task.cores
-            elif task.complete_in_turns == 0:
+            elif task.complete_in_turns <= 0:
                 failed_tasks.add(task)
                 tasks_to_remove.add(task)
                 self.ram_used -= task.ram
@@ -65,7 +61,6 @@ class Server() :
     # Decrements each task done by one turn. 
     #   Tasks completed as a result will have their ram and memory removed. 
     def decrement_turns_remaining(self):
-
         # Go through all tasks and decrement them. 
         for task in self.tasks:
             task.turns -= 1

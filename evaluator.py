@@ -20,33 +20,39 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool):
         if (len(tasks) != 0):
             task = tasks.pop(0)
 
-        # 3. Once a task is read, it must be assigned to a server in the same turn or marked as failed.
-        for server in servers:
-            # 4a. Assign to server.
-            if server.can_add_task(task):
-                # print(f"assigning {task.number} to {server.number}")
-                server.add_task(task)
-                task = None
-                break
-        
-        # 4b. If cannot be assigned to server, task fails and is written as a failure. 
-        if task != None:
-            # print(f"unable to add task {task.number} to server")
-            outputter.add_output_row(turn, 0, 0, 0) # Failed task. 
+            # 3. Once a task is read, it must be assigned to a server in the same turn or marked as failed.
+            for server in servers:
+                # 4a. Assign to server.
+                if server.can_add_task(task):
+                    # print(f"assigning {task.number} to {server.number}")
+                    server.add_task(task)
+                    task = None
+                    break
+            
+            # 4b. If cannot be assigned to server, task fails and is written as a failure. 
+            if task != None:
+                # print(f"unable to add task {task.number} to server")
+                outputter.add_output_row(turn, 0, 0, 0) # Failed task. 
 
         # Updating time tasks have ran.     
         for server in servers:
             server.decrement_turns_remaining()
-            print(server.tasks)
+            # for task in server.tasks:
+                # print(task.turns)
         turn += 1
 
         # Checking to see if complete. 
-        if (len(tasks) == 0):
-            for server in servers:
-                if len(server.tasks) != 0:
-                    print(server.tasks)
-                    break
-            print(f"finished at {turn}")
+        if (complete(servers, tasks)):
+            # print(f"finished at {turn}")
             print(outputter.output_file_contents)
             print(outputter.simulation_file_contents)
             return outputter
+    
+
+def complete(servers: list[Server], tasks: list[Task]) -> bool:
+    if len(tasks) != 0:
+        return False
+    for server in servers:
+        if len(server.tasks) != 0:
+            return False
+    return True
