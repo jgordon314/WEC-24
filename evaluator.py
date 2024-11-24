@@ -102,8 +102,14 @@ def set_stored_tasks_to_running(servers: list[Server]) -> None:
 # Adds a new task into the server (either for running or for storage). 
 # Returns true if the task was added and false if the task was not added. 
 def add_task_to_servers(servers: list[Server], task: Task) -> bool:
+    def getPower(server : Server) -> int:
+            return server.watts_per_core
+    
+    # Look in order of servers sorted by least power consumed to most
+    servers.sort(key=getPower)
     for server in servers:
         # 4a. Assign to server.
+        
         if server.can_run_task(task):
             # print(f"assigning {task.number} to {server.number}")
             server.run_task(task)
