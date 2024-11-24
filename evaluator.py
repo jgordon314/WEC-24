@@ -22,6 +22,9 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
                 outputter.add_output_row(turn, task.number, 0, task.cumulative_core_use * server.watts_per_core, server.number)
                 outputter.add_simulation_row("Task", time.time() - start, turn, task.number, "Failed")
 
+        # Move any stored tasks into running. 
+        move_stored_tasks_to_running(servers)
+
         # 2. Read the next row in Tasks.csv for a new task to send to a server
         if (len(tasks) != 0):
             task = tasks.pop(0)
@@ -53,14 +56,28 @@ def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
                 print(outputter.simulation_file_contents)
             return outputter
 
-# Adds a new task into the server. 
+# Moves any tasks that are stored to now be running. 
+def move_stored_tasks_to_running(servers: list[Server]) -> None:
+    tasks_to_move = []
+    for server in servers: 
+        for task in server.stored_tasks:
+            if server.can_move_stored_to_running(task):
+                tasks_to_move.append(task)
+    for task in tasks_to_move:
+        if task in server.stored_tasks:
+            server.move_stored_task_to_running(task)
+
+# Adds a new task into the server (either for running or for storage). 
 # Returns true if the task was added and false if the task was not added. 
 def add_task_to_servers(servers: list[Server], task: Task) -> bool:
     for server in servers:
         # 4a. Assign to server.
-        if server.can_add_task(task):
+        if server.can_run_task(task):
             # print(f"assigning {task.number} to {server.number}")
-            server.add_task(task)
+            server.run_task(task)
+            return True
+        elif server.can_store_task(task):
+            server.store_task(task)
             return True
     return False
 
@@ -69,6 +86,6 @@ def complete(servers: list[Server], tasks: list[Task]) -> bool:
     if len(tasks) != 0:
         return False
     for server in servers:
-        if len(server.tasks) != 0:
+        if len(server.running_tasks) != 0:
             return False
     return True
