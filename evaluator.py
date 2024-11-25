@@ -4,12 +4,20 @@ from Outputter import Outputter
 import time 
 
 def eval(servers : list[Server], tasks : list[Task], printData : bool = False):
+    global tasksToSkip
     # Create the output files for the program
     outputter : Outputter = Outputter()
 
     # Start timer 
     start = time.time()
 
+    def getTime(task : Task) -> int:
+        return task.turns
+    
+    orderedTasks = tasks.copy()
+    orderedTasks.sort(key=getTime, reverse=True)
+    tasksToSkip = orderedTasks[0:(int(len(orderedTasks)/2 - 1))]
+    
     turn = 1
     while True:
         # 1. Remove completed/failed tasks from the servers and put them in Output.csv. Update server resources available. 
@@ -62,7 +70,6 @@ def set_stored_tasks_to_running(servers: list[Server]) -> None:
         def powerset(set : list[Task]) -> list[list[Task]] :
             if len(set) == 0:
                 return []
-            
             addedSet = [[set[0]]]
             for y in powerset(set[1:]):
                 addedSet.append(y.copy())
@@ -104,6 +111,23 @@ def set_stored_tasks_to_running(servers: list[Server]) -> None:
 def add_task_to_servers(servers: list[Server], task: Task) -> bool:
     def getPower(server : Server) -> int:
             return server.watts_per_core
+        
+    def tooFull(servers : list[Server]) -> bool:
+        full = 0
+        total = 0
+        for x in servers:
+            total = x.max_cores 
+            full = x.cores_used
+        return full / total >= 0.8
+    
+    if(tooFull(servers)):
+        if task in tasksToSkip:
+            return False
+        
+    if(task.complete_in_turns > task.number and task.complete_in_turns != -1):
+        return False
+        
+    
     
     # Look in order of servers sorted by least power consumed to most
     servers.sort(key=getPower)

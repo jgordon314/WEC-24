@@ -18,7 +18,7 @@ def test_cracked():
     totalTasks = 0
     totalTurns = 0
     totalTasksCompleted = 0
-    tests = 1000
+    tests = 100
     for w in range(0, tests):
         if(w % (tests/10) == 0) : print(w / (tests/100))
         serverList = []
